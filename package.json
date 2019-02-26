@@ -1,0 +1,34 @@
+{
+  "name": "shopify-js-deps",
+  "version": "0.1.0",
+  "description": "Javascript code that is depended on by our Shopify apps",
+  "main": "dist/index.js",
+  "types": "dist/index.d",
+  "author": "Michael Hewson <michael@michaelhewson.ca>",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "build": "tsc",
+    "lint": "tslint -p tsconfig.json",
+    "clean": "rm -rf dist"
+  },
+  "devDependencies": {
+    "tslint": "^5.13.0",
+    "tslint-react": "^3.6.0",
+    "typescript": "^3.3.3333",
+    "typescript-tslint-plugin": "^0.3.1"
+  },
+  "dependencies": {
+    "@shopify/app-bridge": "^1.0.7",
+    "@shopify/polaris": "^3.9.0",
+    "@shopify/react-compose": "^0.1.10",
+    "@types/history": "^4.7.2",
+    "@types/react": "^16.8.5",
+    "@types/react-dom": "^16.8.2",
+    "@types/react-router": "^4.4.4",
+    "history": "^4.7.2",
+    "react": "^16.8.3",
+    "react-dom": "^16.8.3",
+    "react-router": "^4.3.1"
+  }
+}
