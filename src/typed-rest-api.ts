@@ -1,9 +1,9 @@
-import * as t from "io-ts";
-import * as qs from "query-string";
-
 import getCSRFToken from "@shopify/csrf-token-fetcher";
 import {array} from "fp-ts";
+import * as t from "io-ts";
 import {formatValidationError} from "io-ts-reporters";
+import {camelCase, fromPairs, snakeCase} from "lodash";
+import {stringify as toQueryString} from "query-string";
 
 export type HTTPMethod =
   | "GET"
@@ -19,36 +19,24 @@ export type RequestOptions<Response> = {
   responseType: t.Type<Response>,
 };
 
-// replaces null with undefined in JSON objects
-const replaceNullWithUndefined = (value: unknown): unknown => {
-  if (typeof value === "object") {
-    if (value === null) {
-      return undefined;
-    }
+// transforms JSON objects, replacing null with undefined
+// and switching object keys to camelCase
+const deserialize = (value: unknown): unknown => (
+  typeof value === "object" ? (
+    value === null ? undefined :
+    Array.isArray(value) ? value.map(deserialize) :
+    fromPairs(Object.entries(value).map(([key, val]) => [camelCase(key), deserialize(val)]))
+  ) : value
+);
 
-    if (Array.isArray(value)) {
-      for (let i = 0; i < value.length; i++) {
-        value[i] = replaceNullWithUndefined(value[i]);
-      }
-
-      return value;
-    }
-
-    for (const key of Object.keys(value)) {
-      const object = value as {[key: string]: unknown};
-
-      object[key] = replaceNullWithUndefined(object[key]);
-    }
-
-    return value;
-  }
-
-  if (value === null) {
-    return undefined;
-  }
-
-  return value;
-};
+// transform request params, switching object keys to snake_case
+const serialize = (value: unknown): unknown => (
+  typeof value === "object" ? (
+    value === null ? null :
+    Array.isArray(value) ? value.map(serialize) :
+    fromPairs(Object.entries(value).map(([key, val]) => [snakeCase(key), serialize(val)]))
+  ) : value
+);
 
 export async function request<Response>(options: RequestOptions<Response>): Promise<Response> {
   const {params, method, responseType} = options;
@@ -58,9 +46,9 @@ export async function request<Response>(options: RequestOptions<Response>): Prom
 
   if (params) {
     if (method === "GET" || method === "DELETE") {
-      url = url + "?" + qs.stringify(params);
+      url = url + "?" + toQueryString(params);
     } else {
-      body = JSON.stringify(params);
+      body = JSON.stringify(serialize(params));
     }
   }
 
@@ -94,7 +82,7 @@ export async function request<Response>(options: RequestOptions<Response>): Prom
     data = await response.json();
   }
 
-  const result = responseType.decode(replaceNullWithUndefined(data));
+  const result = responseType.decode(deserialize(data));
 
   if (result.isRight()) {
     return result.value;

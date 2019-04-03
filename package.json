@@ -30,6 +30,7 @@
     "history": "^4.7.2",
     "io-ts": "^1.8.3",
     "io-ts-reporters": "^0.0.21",
+    "lodash": "^4.17.11",
     "query-string": "^6.4.0",
     "react": "^16.8.3",
     "react-dom": "^16.8.3",
