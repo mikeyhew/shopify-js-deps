@@ -1,12 +1,13 @@
 {
   "compilerOptions": {
     "target": "es6",
-    "module": "commonjs",
+    "module": "es6",
+    "moduleResolution": "node",
     "jsx": "react",
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
-    "outDir": "dist",
+    "outDir": "lib",
     "strict": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
