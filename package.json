@@ -1,6 +1,6 @@
 {
   "name": "shopify-js-deps",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Javascript code that is depended on by our Shopify apps",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
